@@ -7,6 +7,19 @@ function Users() {
   const dory = { name: "Dory", email: "dory@gmail.com", id: "3" };
 
   const [users, setUsers] = useState([marlin, nemo, dory])
+  //keeps track of all form fields 
+  const [name, setName] = useState('')
+  const [id, setId] = useState('')
+  const [email, setEmail] = useState('')
+
+  const onSubmit = e => {
+    e.preventDefault();
+    const newUser = {id: id, name: name, email: email};
+    setUsers([...users, newUser]);
+    setName('');
+    setId('')
+    setEmail('')
+  };
 
   return (
     <section className="user-management">
@@ -19,14 +32,14 @@ function Users() {
 
       <div>
         <h3>Add User</h3>
-        <form id="add-user" action="#">
+        <form id="add-user" action="#" onSubmit={onSubmit}>
           <fieldset>
             <label>Name</label>
-            <input type="text" id="add-user-name" />
+            <input type="text" id="add-user-name" value={name} onChange={(e) => setName(e.target.value)}/>
             <label>ID</label>
-            <input type="text" id="add-user-id" />
+            <input type="text" id="add-user-id" value={id} onChange={(e) => setId(e.target.value)} />
             <label>Email</label>
-            <input type="text" id="add-user-email" />
+            <input type="text" id="add-user-email" value={email} onChange={(e)=> setEmail(e.target.value)} />
           </fieldset>
           {/* Add more form fields here */}
           <input type="submit" value="Add" />
