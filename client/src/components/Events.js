@@ -1,4 +1,5 @@
 import React, { useState, useReducer } from "react";
+import DeleteEvent from "./DeleteEvent";
 
 const event1 = {
   id: 1,
@@ -69,7 +70,6 @@ function Events() {
     e.preventDefault();
     dispatch({ type: "editId" });
     setEvents((events) => [...events, state]);
-    console.log("events", events);
   };
 
   return (
@@ -82,6 +82,7 @@ function Events() {
           {events.map((e, index) => (
             <li key={index}>
               {e.name} <br />
+              Event Id: {e.id} <br/>
               {e.time} {e.date} <br />
               Description: {e.description} <br />
               Location: {e.location} <br />
@@ -197,7 +198,7 @@ function Events() {
           <input type="submit" />
         </form>
       </div>
-      {console.log(state)}
+      <DeleteEvent />
     </section>
   );
 }
