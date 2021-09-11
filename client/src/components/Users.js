@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from "react";
 import DeleteUser from "./DeleteUser";
+import * as apiClient from "../apiClient";
 
+
+//create a new file and copy this into api client
 function Users() {
-  const getUsers = () => {
-    fetch("http://localhost:3000/users")
-      .then((res) => res.json())
-      .then((res) => setUsers(res));
-  };
+
+  const handleDeleteButton = e => {
+    e.preventDefault();
+    apiClient.deleteUser(deleteId);
+    apiClient.getUsers().then((res) => setUsers(res));;
+  }
+
 
   useEffect(() => {
-    getUsers(); // useEffect will run getUsers() every time this component loads, as opposed to just the first time it is rendered.
+    apiClient.getUsers().then((res) => setUsers(res));; // useEffect will run getUsers() every time this component loads, as opposed to just the first time it is rendered.
   }, []);
 
   const [users, setUsers] = useState([]);
+  const [deleteId, setDeleteId] = useState('');
   //keeps track of all form fields
   const [name, setName] = useState("");
-  const [id, setId] = useState("");
   const [email, setEmail] = useState("");
 
-  const deleteUser = (deleteId) => {
-    const newUsers = users.filter((i) => i.id !== deleteId);
-    setUsers(newUsers);
+  const postUser = (newUser) => {
+    fetch("http://localhost:3000/users", {method:"POST", body: JSON.stringify(newUser), headers: {"content-type": "application/json"}})
+      .then(res => { return res.json()})
+      .then((res) => setUsers(res));
+  };
+
+  const handleAddUser = e => {
+    e.preventDefault();
+    const newUser = {name: name, email: email};
+    postUser(newUser);
+    // setUsers([...users, newUser]);
+    setName('');
+    setEmail('');
   };
 
   return (
@@ -38,7 +53,7 @@ function Users() {
 
       <div>
         <h3>Add User</h3>
-        <form id="add-user" action="http://localhost:3000/users" method="POST">
+        <form id="add-user" action="#" >
           <fieldset>
             <label>
               Name
@@ -48,16 +63,6 @@ function Users() {
                 id="add-user-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-              />
-            </label>
-            <label>
-              ID
-              <input
-                name="id"
-                type="text"
-                id="add-user-id"
-                value={id}
-                onChange={(e) => setId(e.target.value)}
               />
             </label>
             <label>
@@ -72,10 +77,10 @@ function Users() {
             </label>
           </fieldset>
           {/* Add more form fields here */}
-          <input type="submit" value="Add" />
+          <input type="submit" value="Add" onClick={handleAddUser}/>
         </form>
       </div>
-      <DeleteUser deleteUser={deleteUser} />
+      <DeleteUser deleteId={deleteId} setDeleteId={setDeleteId} handleDeleteButton={handleDeleteButton}/>
     </section>
   );
 }

@@ -1,35 +1,6 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import DeleteEvent from "./DeleteEvent";
-
-const event1 = {
-  id: 1,
-  name: "Birthday",
-  time: "10:00",
-  date: "2021-09-01",
-  description: "A birthday party for my best friend",
-  category: "in-person",
-  location: "my house",
-};
-
-const event2 = {
-  id: 2,
-  name: "Graduation",
-  time: "10:00",
-  date: "2021-08-01",
-  description: "The class of 2021 graduates from East High",
-  category: "in-person",
-  location: "UC Berkeley",
-};
-
-const event3 = {
-  id: 3,
-  name: "JS Study Session",
-  time: "10:00",
-  date: "2021-10-01",
-  description: "A chance to practice Javascript interview questions",
-  category: "online",
-  location: "Zoom",
-};
+import * as apiClient from "../apiClient"
 
 const initialState = {
   id: 3,
@@ -63,10 +34,15 @@ function reducer(state, action) {
 }
 
 function Events() {
-  const [events, setEvents] = useState([event1, event2, event3]);
+  const [events, setEvents] = useState([]);
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const onSubmit = (e) => {
+
+  useEffect(() => {
+    apiClient.getEvents().then((eventData) => setEvents(eventData))
+  }, [])
+
+  const handleAddEvent = (e) => {
     e.preventDefault();
     dispatch({ type: "editId" });
     setEvents((events) => [...events, state]);
@@ -92,7 +68,7 @@ function Events() {
         </ul>
 
         <h3>Add Event</h3>
-        <form id="add-event" action="#" onSubmit={onSubmit}>
+        <form id="add-event" action="#" onSubmit={handleAddEvent}>
           <fieldset>
             <label>
               Name

@@ -1,15 +1,14 @@
-import React, {useState} from 'react'
+import React from "react";
 
-function DeleteUser({deleteUser}) {
-  const [deleteId, setDeleteId] = useState('');
-
+function DeleteUser({deleteId, setDeleteId, handleDeleteButton}) {
+  
   return (
     <div>
     <h3>Delete User</h3>
-    <form id="delete-user" action="#" onSubmit={(e)=> deleteUser(deleteId)}>
+    <form id="delete-user" action="#" onSubmit={handleDeleteButton}>
       <fieldset>
         <label>User ID</label>
-        <input type="text" id="delete-user-id" value={deleteId} onChange={(e) => setDeleteId(e.target.value)} />
+        <input type="number" id="delete-user-id" value={deleteId} onChange={(e) => setDeleteId(Number(e.target.value))} />
       </fieldset>
       <input type="submit" />
     </form>

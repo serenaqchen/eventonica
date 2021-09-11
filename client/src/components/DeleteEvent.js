@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+// import React, {useState} from 'react'
 
 function DeleteEvent() {
-  const [deleteId, setDeleteId] = useState('');
+  // const [deleteId, setDeleteId] = useState('');
 
   return (
     <div>
