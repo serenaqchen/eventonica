@@ -1,66 +1,45 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-
-// const marlin = { name: "Marlin", email: "marlin@gmail.com", id: 1 };
-// const nemo = { name: "Nemo", email: "nemo@gmail.com", id: 2 };
-// const dory = { name: "Dory", email: "dory@gmail.com", id: 3 };
-
-// let users = [marlin, nemo, dory]
-var pgp = require('pg-promise')(/* options */)
-var db = pgp('postgres://localhost:5432/eventonica')
+var pgp = require("pg-promise")(/* options */);
+var db = pgp("postgres://localhost:5432/eventonica");
 
 async function addUser(data) {
   // note: this returns a Promise
-  try{
-    const newUser = await db.one('INSERT INTO users (name, email) values (\$1, \$2) RETURNING id, name, email', [data.name, data.email]);
-    console.log("New User:", newUser)
-    return newUser
-  }catch (error) {
-    console.log(error)
-  }
-  
+  const newUser = await db.one(
+    "INSERT INTO users (name, email) values ($1, $2) RETURNING id, name, email",
+    [data.name, data.email]
+  );
+  console.log("New User:", newUser);
+  return newUser;
 }
 
+async function deleteUser(name) {
+  // note: this returns a Promise
+  await db.one("DELETE FROM users WHERE name = $1 RETURNING *", name);
+}
 
 /* GET users listing. */
-router.get('/', async function(req, res, next) {
-  const users = await db.any('SELECT * FROM users')
-  try {
-    res.json(users);
-  } catch (error) {
-    console.log(error)
-  }
+router.get("/", async function (req, res, next) {
+  const users = await db.any("SELECT * FROM users");
+  res.json(users);
 });
 
-router.post('/', async function(req, res, next) {
+router.post("/", async function (req, res, next) {
   // save request data to a variable in routes/users.js
-  return await addUser(req.body).then( async () => {
-    try {
-      const users = await db.any('SELECT * FROM users')
-      console.log('users:', users)
-      return res.json(users)
-    } catch (error) {
-      console.log(error)
-    }
+  return await addUser(req.body).then(async () => {
+    const users = await db.any("SELECT * FROM users");
+    return res.json(users);
   });
 });
 
 // Delete user
-router.delete('/:userId', function (req, res) {
+router.delete("/:userName", async function (req, res) {
   // save request data to a variable in routes/users.js
-  const userId = req.params.userId;
-  
-  users = users.filter(i => {
-    if(i.id != userId){
-      return true; 
-    } else {
-      return false;
-    } 
+  const userName = req.params.userName;
+  return await deleteUser(userName).then(async () => {
+    const users = await db.any("SELECT * FROM users");
+    return res.json(users);
   });
-  console.log(users);
-  res.json(users);
 });
-
-
 
 module.exports = router;

@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect } from "react";
 import DeleteEvent from "./DeleteEvent";
-import * as apiClient from "../apiClient"
+import * as apiClient from "../apiClient";
 
 const initialState = {
   id: 3,
@@ -28,6 +28,16 @@ function reducer(state, action) {
       return { ...state, category: action.payload };
     case "editLocation":
       return { ...state, location: action.payload };
+    case "reset":
+      return {
+        ...state,
+        name: "",
+        time: "",
+        date: "",
+        description: "",
+        category: "",
+        location: "",
+      };
     default:
       return state;
   }
@@ -36,17 +46,50 @@ function reducer(state, action) {
 function Events() {
   const [events, setEvents] = useState([]);
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [deleteId, setDeleteId] = useState("");
 
   useEffect(() => {
-    apiClient.getEvents().then((eventData) => setEvents(eventData))
-  }, [])
+    apiClient.getEvents().then((eventData) => {
+      //change the format of the date 
+      for (let obj of eventData){
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        let dt = new Date(obj.date);
+        let fullDate = dt.toLocaleDateString("en-US", options);
+        obj.date = fullDate;
+      }
+      setEvents(eventData);
+    });
+  }, []);
 
   const handleAddEvent = (e) => {
     e.preventDefault();
     dispatch({ type: "editId" });
-    setEvents((events) => [...events, state]);
+    apiClient.postEvent(state).then((data) => {
+      for (let obj of data){
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        let dt = new Date(obj.date);
+        let fullDate = dt.toLocaleDateString("en-US", options);
+        obj.date = fullDate;
+      }
+      setEvents(data);
+    });
+    dispatch({type: "reset"})
   };
+
+  // const handleDeleteEvents = (e) => {
+  //   e.preventDefault();
+
+  // }
 
   return (
     <section className="event-management">
@@ -58,8 +101,8 @@ function Events() {
           {events.map((e, index) => (
             <li key={index}>
               {e.name} <br />
-              Event Id: {e.id} <br/>
-              {e.time} {e.date} <br />
+              Event Id: {e.id} <br />
+              {e.date} @ {e.time} <br />
               Description: {e.description} <br />
               Location: {e.location} <br />
               {e.category}
@@ -86,7 +129,7 @@ function Events() {
                 required
               />
             </label>
-
+            <br/><br/>
             <label>
               Time
               <input
@@ -102,7 +145,7 @@ function Events() {
                 required
               />
             </label>
-
+            <br/><br/>
             <label>
               Date
               <input
@@ -118,7 +161,7 @@ function Events() {
                 required
               />
             </label>
-
+            <br/><br/>
             <label>
               Choose a category:
               <select
@@ -137,7 +180,7 @@ function Events() {
                 <option value="in-person">In-person</option>
               </select>
             </label>
-
+            <br/><br/>
             <label>
               Location
               <input
@@ -153,7 +196,7 @@ function Events() {
                 required
               />
             </label>
-
+            <br/><br/>
             <label>
               Description
               <input
@@ -174,9 +217,10 @@ function Events() {
           <input type="submit" />
         </form>
       </div>
-      <DeleteEvent />
     </section>
   );
 }
+
+//<DeleteEvent deleteId={deleteId} setDeleteId={setDeleteId} handleDeleteEvents={handleDeleteEvents}/>
 
 export default Events;

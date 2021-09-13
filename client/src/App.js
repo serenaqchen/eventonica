@@ -13,13 +13,14 @@ function App() {
       </header>
 
       <main>
-        <div className="user-and-events">
+        <aside className="user-and-events">
           <Users />
-          <Events />
-        </div>
+        </aside>
+        <div>
 
-        <aside className="search-toolbar">
-          <div>
+        </div>
+        <Events />
+        <div className="search-toolbar">
             <h3>Find Events</h3>
             <form id="search" action="#">
               <fieldset>
@@ -33,8 +34,7 @@ function App() {
 
               <input type="submit" value="Search" />
             </form>
-          </div>
-        </aside>
+        </div>
       </main>
 
       <Footer /> 

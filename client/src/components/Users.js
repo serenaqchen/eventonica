@@ -6,37 +6,40 @@ import * as apiClient from "../apiClient";
 //create a new file and copy this into api client
 function Users() {
 
-  const handleDeleteButton = e => {
-    e.preventDefault();
-    apiClient.deleteUser(deleteId);
-    apiClient.getUsers().then((res) => setUsers(res));;
-  }
-
-
   useEffect(() => {
     apiClient.getUsers().then((res) => setUsers(res));; // useEffect will run getUsers() every time this component loads, as opposed to just the first time it is rendered.
   }, []);
 
   const [users, setUsers] = useState([]);
-  const [deleteId, setDeleteId] = useState('');
+  const [deleteName, setDeleteName] = useState('');
   //keeps track of all form fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-
-  const postUser = (newUser) => {
-    fetch("http://localhost:3000/users", {method:"POST", body: JSON.stringify(newUser), headers: {"content-type": "application/json"}})
-      .then(res => { return res.json()})
-      .then((res) => setUsers(res));
-  };
+  const [validUser, setValidUser] = useState(true)
 
   const handleAddUser = e => {
     e.preventDefault();
     const newUser = {name: name, email: email};
-    postUser(newUser);
-    // setUsers([...users, newUser]);
+    apiClient.postUser(newUser).then((res) => setUsers(res));
     setName('');
     setEmail('');
   };
+
+  const handleDeleteUser = e => {
+    e.preventDefault();
+    const currentUsers = []
+    for (let obj of users){
+      currentUsers.push( obj.name )
+    }
+    if (currentUsers.includes(deleteName)){
+      apiClient.deleteUser(deleteName).then((res) => setUsers(res));
+      setDeleteName('')
+      setValidUser(true)
+    } else {
+      setValidUser(false)
+    }
+  }
+
 
   return (
     <section className="user-management">
@@ -53,7 +56,7 @@ function Users() {
 
       <div>
         <h3>Add User</h3>
-        <form id="add-user" action="#" >
+        <form id="add-user" action="#" onSubmit={handleAddUser}>
           <fieldset>
             <label>
               Name
@@ -65,6 +68,7 @@ function Users() {
                 onChange={(e) => setName(e.target.value)}
               />
             </label>
+            <br/><br/>
             <label>
               Email
               <input
@@ -77,10 +81,10 @@ function Users() {
             </label>
           </fieldset>
           {/* Add more form fields here */}
-          <input type="submit" value="Add" onClick={handleAddUser}/>
+          <input type="submit" value="Add"/>
         </form>
       </div>
-      <DeleteUser deleteId={deleteId} setDeleteId={setDeleteId} handleDeleteButton={handleDeleteButton}/>
+      <DeleteUser deleteName={deleteName} setDeleteName={setDeleteName} handleDeleteUser={handleDeleteUser} validUser={validUser}/>
     </section>
   );
 }

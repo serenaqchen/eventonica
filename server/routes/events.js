@@ -1,42 +1,45 @@
 var express = require('express');
 var router = express.Router();
+var pgp = require("pg-promise")(/* options */);
+var db = pgp("postgres://localhost:5432/eventonica");
 
-const event1 = {
-  id: 1,
-  name: "Birthday",
-  time: "10:00",
-  date: "2021-09-01",
-  description: "A birthday party for my best friend",
-  category: "in-person",
-  location: "my house",
-};
+async function addEvent(data) {
+  // note: this returns a Promise
+  const newEvent = await db.one(
+    "INSERT INTO events (name, time, date, category, location, description) values ($1, $2, $3, $4, $5, $6) RETURNING *",
+    [data.name, data.time, data.date, data.category, data.location, data.description]
+  );
+  return newEvent;
+}
 
-const event2 = {
-  id: 2,
-  name: "Graduation",
-  time: "10:00",
-  date: "2021-08-01",
-  description: "The class of 2021 graduates from East High",
-  category: "in-person",
-  location: "UC Berkeley",
-};
+async function DeleteEvent(id) {
+  // note: this returns a Promise
+  await db.one("DELETE FROM events WHERE id = $1 RETURNING *", id);
+}
 
-const event3 = {
-  id: 3,
-  name: "JS Study Session",
-  time: "10:00",
-  date: "2021-10-01",
-  description: "A chance to practice Javascript interview questions",
-  category: "online",
-  location: "Zoom",
-};
-
-let events = [event1, event2, event3]
-
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
+/* GET events listing. */
+router.get("/", async function (req, res, next) {
+  const events = await db.any("SELECT * FROM events");
   res.json(events);
+});
+
+router.post("/", async function (req, res, next) {
+  // save request data to a variable in routes/events.js
+  console.log("body", req.body)
+  return await addEvent(req.body).then(async () => {
+    const events = await db.any("SELECT * FROM events");
+    return res.json(events);
+  });
+});
+
+// Delete event
+router.delete("/:eventId", async function (req, res) {
+  // save request data to a variable in routes/events.js
+  const eventId = req.params.eventId;
+  return await deleteEvent(eventId).then(async () => {
+    const events = await db.any("SELECT * FROM events");
+    return res.json(events);
+  });
 });
 
 
