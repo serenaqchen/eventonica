@@ -60,25 +60,25 @@ function Users() {
           <fieldset>
             <label>
               Name
-              <input
+            </label>
+            <input
                 name="name"
                 type="text"
                 id="add-user-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-            </label>
             <br/><br/>
             <label>
               Email
-              <input
+            </label>
+            <input
                 name="email"
                 type="text"
                 id="add-user-email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </label>
           </fieldset>
           {/* Add more form fields here */}
           <input type="submit" value="Add"/>

@@ -9,18 +9,16 @@ function App() {
     <div className="App">
       <header>
         <img src={logo} alt="Calendar Star Logo" />
-        <h1>Eventonica</h1>
+        <h1>eVenonicA</h1>
       </header>
 
       <main>
-        <aside className="user-and-events">
+        <aside className="users">
           <Users />
         </aside>
-        <div>
-
-        </div>
-        <Events />
-        <div className="search-toolbar">
+        <div className="events">
+          <Events />
+          <div className="search-toolbar">
             <h3>Find Events</h3>
             <form id="search" action="#">
               <fieldset>
@@ -34,11 +32,11 @@ function App() {
 
               <input type="submit" value="Search" />
             </form>
+          </div>
         </div>
       </main>
 
-      <Footer /> 
-
+      <Footer />
     </div>
   );
 }

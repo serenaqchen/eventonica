@@ -115,7 +115,8 @@ function Events() {
           <fieldset>
             <label>
               Name
-              <input
+            </label>
+            <input
                 type="text"
                 id="add-event-name"
                 placeholder="Virtual corgi meetup"
@@ -128,11 +129,11 @@ function Events() {
                 }
                 required
               />
-            </label>
             <br/><br/>
             <label>
               Time
-              <input
+            </label>
+            <input
                 id="add-event-time"
                 type="time"
                 value={state.time}
@@ -144,11 +145,11 @@ function Events() {
                 }
                 required
               />
-            </label>
             <br/><br/>
             <label>
               Date
-              <input
+            </label>
+            <input
                 id="add-event-date"
                 type="date"
                 value={state.date}
@@ -160,11 +161,11 @@ function Events() {
                 }
                 required
               />
-            </label>
             <br/><br/>
             <label>
               Choose a category:
-              <select
+            </label>
+            <select
                 id="category"
                 name="category"
                 value={state.category}
@@ -179,11 +180,11 @@ function Events() {
                 <option value="online">Online</option>
                 <option value="in-person">In-person</option>
               </select>
-            </label>
             <br/><br/>
             <label>
               Location
-              <input
+            </label>
+            <input
                 id="add-event-location"
                 type="text"
                 value={state.location}
@@ -195,11 +196,11 @@ function Events() {
                 }
                 required
               />
-            </label>
             <br/><br/>
             <label>
               Description
-              <input
+            </label>
+            <input
                 id="add-event-description"
                 type="text"
                 value={state.description}
@@ -211,7 +212,6 @@ function Events() {
                 }
                 required
               />
-            </label>
           </fieldset>
           {/* Add more form fields here */}
           <input type="submit" />
