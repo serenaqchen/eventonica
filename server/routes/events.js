@@ -12,10 +12,12 @@ async function addEvent(data) {
   return newEvent;
 }
 
-async function DeleteEvent(id) {
+async function deleteEvent(id) {
   // note: this returns a Promise
   await db.one("DELETE FROM events WHERE id = $1 RETURNING *", id);
 }
+
+
 
 /* GET events listing. */
 router.get("/", async function (req, res, next) {
@@ -42,5 +44,11 @@ router.delete("/:eventId", async function (req, res) {
   });
 });
 
+/* GET filtered events listing. */
+router.get("/:filteredCategory", async function (req, res, next) {
+  const filteredCategory = req.params.filteredCategory
+  const events = await db.any("SELECT * FROM events WHERE category = $1", filteredCategory);
+  res.json(events);
+});
 
 module.exports = router;

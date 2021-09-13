@@ -27,11 +27,22 @@ export const postEvent = async (newEvent) => {
   } else {
     newEvent.time = `${newEvent.time.slice(0,5)} AM`
   }
-  console.log('front end', JSON.stringify(newEvent))
   const response = await fetch("http://localhost:3000/events", {
     method: "POST",
     body: JSON.stringify(newEvent),
     headers: { "content-type": "application/json"},
   });
   return response.json();
+};
+
+export const deleteEvent = (deleteId) => {
+  return fetch(`http://localhost:3000/events/${deleteId}`, {
+    method: "DELETE",
+  }).then((response) => response.json());
+};
+
+export const filterEventByCategory = (category) => {
+  return fetch(`http://localhost:3000/events/${category}`, {
+    method: "GET",
+  }).then((response) => response.json());
 };

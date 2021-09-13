@@ -27,15 +27,19 @@ function Users() {
 
   const handleDeleteUser = e => {
     e.preventDefault();
+    //finding the list of current users for validation
     const currentUsers = []
     for (let obj of users){
       currentUsers.push( obj.name )
     }
+    //if user is valid --> delete from database
     if (currentUsers.includes(deleteName)){
       apiClient.deleteUser(deleteName).then((res) => setUsers(res));
+      //reset delete input
       setDeleteName('')
       setValidUser(true)
     } else {
+      //if user is not valid show error message
       setValidUser(false)
     }
   }

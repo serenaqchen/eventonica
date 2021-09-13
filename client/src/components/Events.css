@@ -1,0 +1,9 @@
+.events{
+  margin-left: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.event-management{
+  margin-left: 50px;
+}
